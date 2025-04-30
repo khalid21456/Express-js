@@ -1,28 +1,25 @@
 import express from 'express';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// or using body-parser package to parse the body of the request
-app.use(express.json());
+// Configure view engine
+app.set('view engine', 'ejs');  // Set EJS as the view engine
+app.set('views', path.join(__dirname, 'views'));
 
-const users = []
+// Serve static files
+app.use(express.static(path.join(__dirname, 'style')));
 
-app.get('/', (req,res) => {
-    res.send('Hello World');
-})
+// Route to render your view
+app.get('/', (req, res) => {
+    res.render('index');  // Looks for views/index.ejs
+});
 
-app.post('/users', (req,res) => {
-    res.send(req.body);
-    users.push(req.body.user);
-})
-
-app.get('/all',(req,res)=>{
-    res.send(users);
-})
-
-
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
-})
-
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+});
